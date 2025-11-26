@@ -2,6 +2,7 @@ import React from 'react'
 import Header from '../components/Header'
 import Footer from '../../components/Footer'
 import { FaSearch } from 'react-icons/fa'
+import { Link } from 'react-router'
 
 function Home() {
   return (
@@ -24,9 +25,74 @@ function Home() {
       <section  className='md:px-40 p-5 my-5 flex flex-col justify-center items-center'>
         <h1 className="text-5xl font-bold">New Arrivals</h1>
         <h2 className="text-3xl my-3">Explore Our Latest Collections</h2>
-      </section>t
+         {/* books row and col */}
+        <div className='md:grid grid-cols-4 w-full mt-10'>
+            <div className="shadow rounded p-3 mx-4">
+                 <div className='flex justify-center '><img width={'250px'} height={'250px'} src="https://tse3.mm.bing.net/th/id/OIP.O_5w60OzA93YxcPlYTOiaAHaLH?w=933&h=1400&rs=1&pid=ImgDetMain&o=7&rm=3" alt="book"/></div>
+             <div className="flex justify-center items-center flex-col">
+               <h3 className='text-blue-600 font-bold text-lg'>Author</h3>
+               <h4 className='text-lg'>title</h4>
+               <h4>$price</h4>
+             </div>
+            </div>
+              <div className="shadow rounded p-3 mx-4">
+                   <div className='flex justify-center '><img width={'250px'} height={'250px'} src="https://tse3.mm.bing.net/th/id/OIP.O_5w60OzA93YxcPlYTOiaAHaLH?w=933&h=1400&rs=1&pid=ImgDetMain&o=7&rm=3" alt="book"/></div>
+             <div className="flex justify-center items-center flex-col">
+               <h3 className='text-blue-600 font-bold text-lg'>Author</h3>
+               <h4 className='text-lg'>title</h4>
+               <h4>$price</h4>
+             </div>
+            </div>
+              <div className="shadow rounded p-3 mx-4">
+                   <div className='flex justify-center '><img width={'250px'} height={'250px'} src="https://tse3.mm.bing.net/th/id/OIP.O_5w60OzA93YxcPlYTOiaAHaLH?w=933&h=1400&rs=1&pid=ImgDetMain&o=7&rm=3" alt="book"/></div>
+             <div className="flex justify-center items-center flex-col">
+               <h3 className='text-blue-600 font-bold text-lg'>Author</h3>
+               <h4 className='text-lg'>title</h4>
+               <h4>$price</h4>
+             </div>
+            </div>
+              <div className="shadow rounded p-3 mx-4">
+                    <div className='flex justify-center '><img width={'250px'} height={'250px'} src="https://tse3.mm.bing.net/th/id/OIP.O_5w60OzA93YxcPlYTOiaAHaLH?w=933&h=1400&rs=1&pid=ImgDetMain&o=7&rm=3" alt="book"/></div>
+             <div className="flex justify-center items-center flex-col">
+               <h3 className='text-blue-600 font-bold text-lg'>Author</h3>
+               <h4 className='text-lg'>title</h4>
+               <h4>$price</h4>
+             </div>
+            </div>
+        </div>
+          <div className="text-center mt-10">
+            <Link to={'/books'}  className="p-3 bg-blue-600 text-white">
+              Explore More ...
+            </Link>
+          </div>
+
+      </section>
       {/* author */}
+      <section className='md:px-40 p-5 my-5 md:grid grid-cols-2 items-center gap-10'>
+        <div className="text-center">
+           <h1 className="text-3xl font-bold">FEATURED AUTHORS</h1>
+            <h2 className="text-2xl my-3">Captivates With Every Word</h2>
+           <p className='text-justify mt-9 text-2xl'> She is a passionate storyteller who has always believed in the power of words to inspire, comfort, and transform. With a deep love for literature,he began writing at a young age, exploring themes of emotion, human connection, and everyday magic. Over the years, this passion grew into a dedicated journey of crafting stories that resonate with readers of all ages.</p>
+
+          <p className='text-justify mt-9 text-2xl'> Drawing inspiration from real-life experiences, travels, and conversations, she creates characters that feel real and narratives that leave a lasting impact. Each book is written with care, blending imagination with heart to create an immersive reading experience.When not lost in a world of writing, she enjoys exploring new cultures, spending time in nature, and discovering unique stories around every corner. Every book is a piece of this journey—and an invitation for readers to join in.</p>
+        </div>
+         <div className="p-5 flex justify-center items-center">
+          <img src="https://media.istockphoto.com/id/1478316046/photo/portrait-of-high-school-teacher-at-school-library.webp?b=1&s=170667a&w=0&k=20&c=FfjVOjG1dRPvsu8yWDMhiMTyJQhjrGbQe0qvHjzvn5Y=" alt="" />
+         </div>
+      </section>
       {/* testomy */}
+      <section  className='md:px-40 p-5 my-5 flex flex-col justify-center items-center'>
+        <h1 className="text-4xl font-bold">TESTIMONIALS</h1>
+        <h2 className="text-3xl my-3">See What Others Are Saying</h2>
+        <div className="my-5 flex justify-center items-center flex-col">
+          <img width={'150px'} height={'150px'} style={{borderRadius:'50%'}} src="https://tse2.mm.bing.net/th/id/OIP.IUoSLt3fn22RIymLIRhfPAHaJh?w=498&h=640&rs=1&pid=ImgDetMain&o=7&rm=3" alt="" />
+            <h1 className='mt-5 text-xl'>Anna Ben</h1>
+            <p className='text-justify mt-4 text-2xl'>
+              <span className='font-bold me-2 text-2xl'>Amazing Collection and Easy Navigation</span>
+              The bookstore website offers a clean, welcoming, and user-friendly experience designed to make browsing and discovering books effortless. Its layout is well-structured, with neatly organized categories that help users quickly find fiction, non-fiction, academic titles, and bestsellers. The homepage highlights featured books and new arrivals, creating a visually appealing first impression while guiding users toward popular choices. Clear fonts, consistent spacing, and a balanced color palette contribute to a pleasant reading and navigation experience.
+            </p>
+        </div>
+      </section>
      </div>
    <Footer/> 
     </>
