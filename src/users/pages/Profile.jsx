@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Header from '../components/Header'
 import Footer from '../../components/Footer'
 import { FaCircleCheck } from 'react-icons/fa6'
@@ -10,6 +10,18 @@ import Purchase from '../components/Purchase'
 
 function Profile() {
     const [tab,setTab] = useState(1)
+    const [dp,setDp]= useState("")
+    const [username,setUsername]= useState("")
+    //console.log(username,dp);
+    useEffect(()=>{
+      if(sessionStorage.getItem("token") && sessionStorage.getItem("user")){
+        const user = JSON.parse(sessionStorage.getItem("user"))
+        setUsername(user?.username)
+        setDp(user?.picture)
+      }
+    },[])
+
+
   return (
     <>
     <Header/>
@@ -17,11 +29,11 @@ function Profile() {
     <div style={{height:'200px'}} className='bg-black'></div>
     {/* profile image */}
     <div style={{width:'230px',height:'230px',borderRadius:'50%',marginLeft:'70px',marginTop:'-130px'}} className='bg-white p-3'>
-        <img style={{width:'200px',height:'200px',borderRadius:'50%'}} src="https://wallpapers.com/images/hd/professional-profile-pictures-1080-x-1080-460wjhrkbwdcp1ig.jpg" alt="profile" />
+        <img style={{width:'200px',height:'200px',borderRadius:'50%'}} src={dp? dp: "https://wallpapers.com/images/hd/professional-profile-pictures-1080-x-1080-460wjhrkbwdcp1ig.jpg"} alt="profile" />
     </div>
       {/* name with edit */}
       <div className='md:flex justify-between items-center my-5 md:px-10 px-5 '>
-        <h1 className='text-2xl font-bold flex items-center mx-5 md:mx-20'>Username <FaCircleCheck className='text-blue-400 ms-5'/></h1>
+        <h1 className='text-2xl font-bold flex items-center mx-5 md:mx-20'>{username}<FaCircleCheck className='text-blue-400 ms-5'/></h1>
         <Edit/>
       </div>
       <p className="text-justify md:px-20 px-5 pb-10  text-xl">

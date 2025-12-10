@@ -1,9 +1,121 @@
 import React, { useState } from 'react'
 import { FaEye, FaEyeSlash, FaUser } from 'react-icons/fa'
-import { Link } from 'react-router'
+import { Link, useNavigate } from 'react-router'
+import { ToastContainer, toast } from 'react-toastify';
+import { googleLoginAPI, loginAPI, registerAPI } from '../services/allAPI';
+import { GoogleLogin } from '@react-oauth/google';
+import { jwtDecode } from "jwt-decode";
 
 function Auth({insideRegister}) {
+  const navigate = useNavigate()
   const [viewPassword, setPassword] = useState(false)
+  //store data from home
+  const [userDetails, setUserDetails] = useState({
+    username:"", email: "", password:""
+  })
+ //console.log(userDetails);
+  
+ const handleRegister = async (e)=>{
+   e.preventDefault()
+   const{username,email,password}= userDetails
+   if(email && password && username){
+    //toast.success("API Call")
+    try{
+      const result = await registerAPI(userDetails)
+      console.log(result);
+      if(result.status == 200){
+        toast.success("Register Successfull....Please Login to BookStore")
+        setUserDetails({ username:"", email: "", password:""})
+        navigate('/login')
+      }
+      else if(result.status == 409){
+        toast.warning(result.response.data)
+        setUserDetails({ username:"", email: "", password:""})
+        navigate('/login')
+      }
+      else{
+         console.log(result);
+         toast.error("Something went wrong")
+        setUserDetails({ username:"", email: "", password:""})
+      }
+      
+
+    }
+    catch(err){
+      console.log(err);  
+    }
+   }
+   else{
+    toast.info("Please fill the form completely")
+   }
+ }
+
+ const handleLogin = async (e) =>{
+  e.preventDefault()
+  const {email,password}= userDetails
+  if(email && password){
+    try{
+        const result = await loginAPI(userDetails)
+        console.log(result);
+        if(result.status == 200){
+          toast.success("Login Successful !!")
+          sessionStorage.setItem("token",result.data.token)
+          sessionStorage.setItem("user",JSON.stringify(result.data.user))
+          setTimeout(()=>{
+            if(result.data.user.role == "admin"){
+              navigate('/admin/home')
+            }
+            else{
+              navigate('/')
+            }
+          },2500)
+        }
+        else if(result.status == 401 || result.status == 404){
+          toast.warning(result.response.data)
+          setUserDetails({ username:"", email: "", password:""})
+        }
+        else{
+          toast.error("Something Went Wrong !!")
+           setUserDetails({ username:"", email: "", password:""})
+        }
+        
+    }
+    catch(err){
+      console.log(err);
+    }
+  }
+  else{
+    toast.info("Please fill the form completely !!!")
+  }
+ }
+ const handleGoogleLogin = async(credentialResponse)=>{
+   console.log("Inside handleGoogleLogin");
+   console.log(credentialResponse); 
+   const decode = jwtDecode(credentialResponse.credential)
+   //console.log(decode);
+   const result = await googleLoginAPI({username:decode.name,email:decode.email,password:'googlePassword',picture:decode.picture})
+   if(result.status == 200){
+          toast.success("Login Successful !!")
+          sessionStorage.setItem("token",result.data.token)
+          sessionStorage.setItem("user",JSON.stringify(result.data.user))
+          setTimeout(()=>{
+            if(result.data.user.role == "admin"){
+              navigate('/admin/home')
+            }
+            else{
+              navigate('/')
+            }
+          },2500)
+        }
+        else{
+          console.log(result);
+          toast.error("Sonmething went Wrong !!")     
+        }
+ }
+
+
+
+
   return (
     <div className='w-full min-h-screen flex justify-center items-center flex-col bg-[url(/auth-img.png)] bg-cover bg-center'>
       <div className="p-10">
@@ -18,10 +130,11 @@ function Auth({insideRegister}) {
             {/* username for register */}
             {
               insideRegister && 
-                <input type="text" placeholder='Username' className='bg-white text-black placeholder-gray-500 w-full p-2 rounded mb-5' />
+                <input value={userDetails.username} onChange={(e)=> setUserDetails({...userDetails,username:e.target.value})} type="text" placeholder='Username' className='bg-white text-black placeholder-gray-500 w-full p-2 rounded mb-5' />
             }
-            <input type="text" placeholder='Email Id' className='bg-white text-black placeholder-gray-500 w-full p-2 rounded mb-5' />
-            <div className='flex items-center'> <input type={viewPassword?"text":"password" }placeholder='Password' className='bg-white text-black placeholder-gray-500 w-full p-2 rounded' />
+            {/* email */}
+            <input value={userDetails.email} onChange={(e)=> setUserDetails({...userDetails,email:e.target.value})} type="text" placeholder='Email Id' className='bg-white text-black placeholder-gray-500 w-full p-2 rounded mb-5' />
+            <div className='flex items-center'> <input value={userDetails.password} onChange={(e)=> setUserDetails({...userDetails,password:e.target.value})} type={viewPassword?"text":"password" }placeholder='Password' className='bg-white text-black placeholder-gray-500 w-full p-2 rounded' />
            {/* password view */}
             { viewPassword ?
               <FaEyeSlash onClick={()=>setPassword(!viewPassword)} className='text-gray-500 cursor-pointer' style={{marginLeft:'-30px',marginTop:'-10px'}}/> :
@@ -39,12 +152,34 @@ function Auth({insideRegister}) {
             {/* login/register btn */}
              <div className='text-center'>
               {  insideRegister ?
-                <button type='button' className='bg-green-700 w-full rounded p-2 mt-3'>Register</button>:
-                  <button type='button' className='bg-green-700 w-full rounded p-2  '>Login</button>
+                <button onClick={handleRegister} type='button' className='bg-green-700 w-full rounded p-2 mt-3'>Register</button>:
+                  <button onClick={handleLogin} type='button' className='bg-green-700 w-full rounded p-2  '>Login</button>
                 }
              </div>
 
              {/* google authentication */}
+              <div className="text-center my-5">
+                {
+                  !insideRegister && 
+                  <p>---------------------------------------------or------------------------------------------</p>}
+                  {
+                    !insideRegister &&
+                    <div  className='my-5 flex justify-center items-center w-full' >
+                      <GoogleLogin
+                  onSuccess={credentialResponse => {
+                  handleGoogleLogin(credentialResponse)
+                 }}
+                 onError={() => {
+                     console.log('Login Failed');
+                    }} />
+                     </div>
+                    }
+                   
+                
+              </div>
+
+
+
              <div className='my-5 text-center'>
                   {
                     insideRegister ? <p className='text-blue-600'>Already a User ? <Link  to={'/login'} className='underline ms-5'>Login</Link> </p>:
@@ -54,7 +189,12 @@ function Auth({insideRegister}) {
           </form>
         </div>
       </div>
-
+      {/* toast */}
+      <ToastContainer
+        position="top-center"
+        autoClose={2000}
+        theme="colored"
+      />
 
     </div>
   )

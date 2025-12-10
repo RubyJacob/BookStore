@@ -4,7 +4,7 @@ import { FaLocationDot } from "react-icons/fa6";
 import { FaPaperPlane, FaPhoneAlt } from 'react-icons/fa';
 import { MdEmail } from 'react-icons/md';
 import { FaLocationArrow } from "react-icons/fa";
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 import Footer from '../../components/Footer';
 
 function Contact() {
@@ -16,7 +16,7 @@ function Contact() {
          <div style={{width:'90%'}} className='flex justify-center mx-5'>
            <p className='text-2xl p-5 text-center'>Thank you for visiting our bookstore! If you need help with book orders, store information, recommendations, or any general queries, please reach out to us. Our team is dedicated to providing quick and friendly assistance to every reader. You can contact us via email, phone, or through our online form—we’re always here to help you find your next great read.</p>
          </div>
-         <div className="md:grid grid-cols-3 m-5 sm:grid grid-cols-1">
+         <div className="md:grid grid-cols-3 m-5 sm:grid-cols-1">
           <div className='flex items-center justify-center'>
               <FaLocationDot className='text-2xl' />
               <h1 className='text-2xl'> 123 Main Street,Apt 4B, Anytown, CA 9876</h1>
