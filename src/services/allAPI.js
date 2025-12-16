@@ -16,3 +16,8 @@ export const googleLoginAPI = async (userDetails) =>{
     return await commonAPI("POST",`${serverURL}/google/sign-in`,userDetails)
 }
 
+// /user/book/add addbook api 
+export const addbookAPI = async(reqBody,reqHeader) =>{
+  return await commonAPI("POST",`${serverURL}/user/book/add`,reqBody,reqHeader)
+}
+
