@@ -21,3 +21,24 @@ export const addbookAPI = async(reqBody,reqHeader) =>{
   return await commonAPI("POST",`${serverURL}/user/book/add`,reqBody,reqHeader)
 }
 
+// homepage books api - called by homecomponent when page loads
+export const getHomePageBookAPI = async() =>{
+  return await commonAPI("GET",`${serverURL}/books/home`,{})
+}
+
+
+// bookspage api - called by books component when page loads
+export const getAllBooksPageAPI = async(reqHeader) =>{
+  return await commonAPI("GET",`${serverURL}/books/all`,{},reqHeader)
+}
+
+// useruploadbooks api - called by profile-book status component when page loads
+export const getAllUserBooksAPI = async(reqHeader) =>{
+  return await commonAPI("GET",`${serverURL}/user-books/all`,{},reqHeader)
+}
+
+// userPurchasebooks api - called by profile-book status component when page loads
+export const getAllUserPurchaseBooksAPI = async(reqHeader) =>{
+  return await commonAPI("GET",`${serverURL}/user-books/purchase`,{},reqHeader)
+}
+

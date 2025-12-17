@@ -3,17 +3,39 @@ import Header from '../components/Header'
 import Footer from '../../components/Footer'
 import { FaBars } from 'react-icons/fa'
 import { Link } from 'react-router-dom'
+import { getAllBooksPageAPI } from '../../services/allAPI'
+import { all } from 'axios'
 
 function Books() {
   const [showCategory,setShowCategory] = useState(false)
   const [token,setToken] = useState("")
+  const [allBooks,setAllBooks] = useState([])
+  console.log(allBooks);
+  
 
   useEffect(()=>{
     if(sessionStorage.getItem("token")){
        const userToken = sessionStorage.getItem("token")
        setToken(userToken)
+       getAllBooks(userToken)
     }
-  })
+  },[])
+   
+  const getAllBooks = async(token)=>{
+    const reqHeader ={
+      "Authorization" : `Bearer ${token}`
+    }
+    const result = await getAllBooksPageAPI(reqHeader)
+    if(result.status == 200){
+      setAllBooks(result.data)
+    }
+    else{
+        console.log(result);        
+    }
+  }
+
+
+
   return (
     <>
     <Header/>
@@ -55,42 +77,22 @@ function Books() {
         </div>
         <div className="col-span-3">
           <div className='md:grid grid-cols-4 mt-5 md:mt-0'>
-            {/* book 1 */}
-             <div className="shadow rounded p-3 mx-4">
-                 <div className='flex justify-center '><img width={'250px'} height={'250px'} src="https://tse3.mm.bing.net/th/id/OIP.O_5w60OzA93YxcPlYTOiaAHaLH?w=933&h=1400&rs=1&pid=ImgDetMain&o=7&rm=3" alt="book"/></div>
-             <div className="flex justify-center items-center flex-col">
-               <h3 className='text-blue-600 font-bold text-lg'>Author</h3>
-               <h4 className='text-lg'>title</h4>
-               <Link to={'/books/:id/view'} className='px-5 py-2 mt-2 text-white bg-blue-500'>View</Link>
+            {/* book duplicate */}
+            { 
+              allBooks?.length > 0 ?
+              allBooks?.map(book=>(
+              <div key={book?._id} className="shadow rounded p-3 mx-4">
+                 <div className='flex justify-center '><img width={'250px'} height={'250px'} src={book?.imageURL} alt="book"/></div>
+                   <div className="flex justify-center items-center flex-col">
+               <h3 className='text-blue-600 font-bold text-lg'>{book?.author}</h3>
+               <h4 className='text-lg'>{book?.title.slice(0,9)}...</h4>
+               <Link to={`/books/${book?._id}/view`} className='px-5 py-2 mt-2 text-white bg-blue-500'>View</Link>
              </div>
             </div>
-            {/* book 2 */}
-             <div className="shadow rounded p-3 mx-4">
-                 <div className='flex justify-center '><img width={'250px'} height={'250px'} src="https://tse3.mm.bing.net/th/id/OIP.O_5w60OzA93YxcPlYTOiaAHaLH?w=933&h=1400&rs=1&pid=ImgDetMain&o=7&rm=3" alt="book"/></div>
-             <div className="flex justify-center items-center flex-col">
-               <h3 className='text-blue-600 font-bold text-lg'>Author</h3>
-               <h4 className='text-lg'>title</h4>
-               <Link to={'/books/:id/view'} className='px-5 py-2 mt-2 text-white bg-blue-500'>View</Link>
-             </div>
-            </div>
-            {/* book 3 */}
-             <div className="shadow rounded p-3 mx-4">
-                 <div className='flex justify-center '><img width={'250px'} height={'250px'} src="https://tse3.mm.bing.net/th/id/OIP.O_5w60OzA93YxcPlYTOiaAHaLH?w=933&h=1400&rs=1&pid=ImgDetMain&o=7&rm=3" alt="book"/></div>
-             <div className="flex justify-center items-center flex-col">
-               <h3 className='text-blue-600 font-bold text-lg'>Author</h3>
-               <h4 className='text-lg'>title</h4>
-               <Link to={'/books/:id/view'} className='px-5 py-2 mt-2 text-white bg-blue-500'>View</Link>
-             </div>
-            </div>
-            {/* book 4 */}
-             <div className="shadow rounded p-3 mx-4">
-                 <div className='flex justify-center '><img width={'250px'} height={'250px'} src="https://tse3.mm.bing.net/th/id/OIP.O_5w60OzA93YxcPlYTOiaAHaLH?w=933&h=1400&rs=1&pid=ImgDetMain&o=7&rm=3" alt="book"/></div>
-             <div className="flex justify-center items-center flex-col">
-               <h3 className='text-blue-600 font-bold text-lg'>Author</h3>
-               <h4 className='text-lg'>title</h4>
-               <Link to={'/books/:id/view'} className='px-5 py-2 mt-2 text-white bg-blue-500'>View</Link>
-             </div>
-            </div>
+              ))
+            :
+            <p className='font-bold'>Loading....</p>
+            }
 
           </div>
         </div>

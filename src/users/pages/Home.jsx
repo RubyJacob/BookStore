@@ -4,10 +4,33 @@ import Footer from '../../components/Footer'
 import { FaSearch } from 'react-icons/fa'
 import { Link, useNavigate } from 'react-router-dom'
 import { ToastContainer, toast } from 'react-toastify';
+import { getHomePageBookAPI } from '../../services/allAPI'
+import { useEffect } from 'react'
 
 function Home() {
   const navigate = useNavigate()
   const [searchKey,setSearchKey] = useState("")
+  const [homeBooks,setHomeBooks] = useState([])
+  console.log(homeBooks);
+  
+
+   useEffect(()=>{
+    getHomeBooks()
+   },[])
+
+
+  const getHomeBooks = async()=>{
+     const result = await getHomePageBookAPI()
+     //console.log(result);
+     if(result.status == 200){
+      setHomeBooks(result.data)
+     }
+     else{
+      console.log(result);    
+     }
+     
+  }
+
   const handleSearch = () =>{
     if(!searchKey){
       toast.warning("Please provide a Book Title heree !!")
@@ -25,7 +48,7 @@ function Home() {
       toast.error("Something went wrong")
     }
   }
-
+  
 
 
   return (
@@ -49,39 +72,24 @@ function Home() {
         <h1 className="text-5xl font-bold">New Arrivals</h1>
         <h2 className="text-3xl my-3">Explore Our Latest Collections</h2>
          {/* books row and col */}
+
         <div className='md:grid grid-cols-4 w-full mt-10'>
-            <div className="shadow rounded p-3 mx-4">
-                 <div className='flex justify-center '><img width={'250px'} height={'250px'} src="https://tse3.mm.bing.net/th/id/OIP.O_5w60OzA93YxcPlYTOiaAHaLH?w=933&h=1400&rs=1&pid=ImgDetMain&o=7&rm=3" alt="book"/></div>
-             <div className="flex justify-center items-center flex-col">
-               <h3 className='text-blue-600 font-bold text-lg'>Author</h3>
-               <h4 className='text-lg'>title</h4>
-               <h4>$price</h4>
-             </div>
-            </div>
-              <div className="shadow rounded p-3 mx-4">
-                   <div className='flex justify-center '><img width={'250px'} height={'250px'} src="https://tse3.mm.bing.net/th/id/OIP.O_5w60OzA93YxcPlYTOiaAHaLH?w=933&h=1400&rs=1&pid=ImgDetMain&o=7&rm=3" alt="book"/></div>
-             <div className="flex justify-center items-center flex-col">
-               <h3 className='text-blue-600 font-bold text-lg'>Author</h3>
-               <h4 className='text-lg'>title</h4>
-               <h4>$price</h4>
-             </div>
-            </div>
-              <div className="shadow rounded p-3 mx-4">
-                   <div className='flex justify-center '><img width={'250px'} height={'250px'} src="https://tse3.mm.bing.net/th/id/OIP.O_5w60OzA93YxcPlYTOiaAHaLH?w=933&h=1400&rs=1&pid=ImgDetMain&o=7&rm=3" alt="book"/></div>
-             <div className="flex justify-center items-center flex-col">
-               <h3 className='text-blue-600 font-bold text-lg'>Author</h3>
-               <h4 className='text-lg'>title</h4>
-               <h4>$price</h4>
-             </div>
-            </div>
-              <div className="shadow rounded p-3 mx-4">
-                    <div className='flex justify-center '><img width={'250px'} height={'250px'} src="https://tse3.mm.bing.net/th/id/OIP.O_5w60OzA93YxcPlYTOiaAHaLH?w=933&h=1400&rs=1&pid=ImgDetMain&o=7&rm=3" alt="book"/></div>
-             <div className="flex justify-center items-center flex-col">
-               <h3 className='text-blue-600 font-bold text-lg'>Author</h3>
-               <h4 className='text-lg'>title</h4>
-               <h4>$price</h4>
-             </div>
-            </div>
+        {/* duplicate card */}
+          {  
+            homeBooks?.length>0 ?
+              homeBooks.map(book =>(
+                  <div key={book?._id} className="shadow rounded p-3 mx-4">
+                 <div className='flex justify-center '><img width={'250px'} height={'250px'} src={book?.imageURL} alt="book"/></div>
+                  <div className="flex justify-center items-center flex-col">
+                          <h3 className='text-blue-600 font-bold text-lg'>{book?.author}</h3>
+                        <h4 className='text-lg'>{book?.title}</h4>
+                       <h4 className='text-red-400'> $ {book?.price}</h4>
+                   </div>
+                 </div>
+              ))
+              :
+              <p className='font-bold'>Loading....</p>
+            }
         </div>
           <div className="text-center mt-10">
             <Link to={'/books'}  className="p-3 bg-blue-600 text-white">
