@@ -10,7 +10,9 @@ function Books() {
   const [showCategory,setShowCategory] = useState(false)
   const [token,setToken] = useState("")
   const [allBooks,setAllBooks] = useState([])
-  console.log(allBooks);
+  const [allCategory,setAllCategory] = useState([])
+  const [tempAllBooks,setTempAllBooks] = useState([])
+  //console.log(allBooks);
   
 
   useEffect(()=>{
@@ -28,12 +30,26 @@ function Books() {
     const result = await getAllBooksPageAPI(reqHeader)
     if(result.status == 200){
       setAllBooks(result.data)
+      setTempAllBooks(result.data)
+      const tempAllCategory = result.data?.map(item=>item.category)
+      const tempCategorySet = new Set(tempAllCategory)
+      console.log([...tempCategorySet]);
+      setAllCategory([...tempCategorySet])
+      
     }
     else{
         console.log(result);        
     }
   }
-
+   
+  const filterBooks = (category)=>{
+    if(category == "all"){
+      setAllBooks(tempAllBooks)
+    }
+    else{
+      setAllBooks(tempAllBooks?.filter(item=> item.category == category))
+    }
+  }
 
 
   return (
@@ -65,14 +81,18 @@ function Books() {
           <div className={showCategory?"block":'md:block hidden'}>
             {/* category 1 */}
               <div className="mt-3">
-                <input type="radio" name='filter' id='all' />
+                <input onClick={()=>{filterBooks("all")}} type="radio" name='filter' id='all' />
                 <label htmlFor="all" className='ms-3'>All</label>
               </div>
               {/* book category */}
-               <div className="mt-3">
-                <input type="radio" name='filter' id='demo' />
-                <label htmlFor="demo" className='ms-3'>Category Name</label>
-              </div>
+              {
+                allCategory?.map((category,index)=>(
+                   <div onClick={()=>{filterBooks(category)}} key={index} className="mt-3">
+                         <input type="radio" name='filter' id={category}/>
+                        <label htmlFor={category} className='ms-3'>{category}</label>
+                   </div>
+                ))
+              }
           </div>
         </div>
         <div className="col-span-3">

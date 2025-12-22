@@ -42,3 +42,14 @@ export const getAllUserPurchaseBooksAPI = async(reqHeader) =>{
   return await commonAPI("GET",`${serverURL}/user-books/purchase`,{},reqHeader)
 }
 
+// userPurchasebooks api - called by profile-book status component when page loads
+export const viewBookAPI = async(reqHeader,id) =>{
+  return await commonAPI("GET",`${serverURL}/books/${id}/view`,{},reqHeader)
+}
+
+
+// edituser api - called by edit component when update button clicks
+export const ediUserAPI = async(id,reqBody,reqHeader) =>{
+  return await commonAPI("PUT",`${serverURL}/user/${id}/edit`,reqBody,reqHeader)
+}
+

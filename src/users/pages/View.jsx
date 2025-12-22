@@ -1,13 +1,41 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Header from '../components/Header'
 import Footer from '../../components/Footer'
 import { FaCamera, FaEye } from 'react-icons/fa'
-import { Link } from 'react-router'
+import { Link, useParams } from 'react-router'
 import { FaBackward, FaX } from 'react-icons/fa6'
+import { viewBookAPI } from '../../services/allAPI'
+import serverURL from '../../services/serverURL'
 
 function View() {
 
   const [modalStatus, setModalStatus] = useState(false)
+  const {id} = useParams()
+  console.log(id);
+  const [book,setBook] = useState({})
+  console.log(book);
+  
+
+  useEffect(()=>{
+    getBookDetails()
+  },[])
+
+  const getBookDetails = async() =>{
+    const token = sessionStorage.getItem("token")
+    if(token){
+      const reqHeader = {
+        "Authorization" : `Bearer ${token}`
+      }
+      const result = await viewBookAPI(reqHeader,id)
+      if(result.status == 200){
+        setBook(result.data)
+      }
+      else{
+        console.log(result);  
+      }
+    }
+  }
+
   return (
     <>
     <Header/>
@@ -17,30 +45,30 @@ function View() {
         <div className='md: grid grid-cols-4 gap-x-10'>
           {/* image col */}
             <div className="col-span-1">
-              <img className='w-full' src="https://tse3.mm.bing.net/th/id/OIP.O_5w60OzA93YxcPlYTOiaAHaLH?w=933&h=1400&rs=1&pid=ImgDetMain&o=7&rm=3" alt="" />
+              <img className='w-full' src={book?.imageURL} alt="" />
             </div>
             {/* book details col */}
             <div className='col-span-3'>
               <div className='flex justify-between items-center mt-5 md:mt-0'>
-                <h1 className='text-2xl font-bold'>Book-Title</h1>
+                <h1 className='text-2xl font-bold'>{book?.title}</h1>
                 <button onClick={()=>setModalStatus(true)} className='text-gray-400'><FaEye/></button>
               </div>
-             <h1 className='text-xl text-blue-500 my-2'>- Author</h1>
+             <h1 className='text-xl text-blue-500 my-2'>- {book?.author}</h1>
              <div className='md:grid grid-cols-3 gap-5 my-10'>
-                <p className='font-bold text-xl'>Publisher : </p>
-                <p className='font-bold text-xl'>Language : </p>
-                <p className='font-bold text-xl'>No. of Pages : </p>
-                <p className='font-bold text-xl'>Original Price : </p>
-                <p className='font-bold text-xl'>ISBN : </p>
-                <p className='font-bold text-xl'>Category : </p>
-                <p className='font-bold text-xl'>Seller : </p>
+                <p className='font-bold text-xl'>Publisher : {book?.publisher}</p>
+                <p className='font-bold text-xl'>Language : {book?.language}</p>
+                <p className='font-bold text-xl'>No. of Pages :{book?.pages} </p>
+                <p className='font-bold text-xl'>Original Price : {book?.price}</p>
+                <p className='font-bold text-xl'>ISBN : {book?.isbn}</p>
+                <p className='font-bold text-xl'>Category :{book?.category} </p>
+                <p className='font-bold text-xl'>Seller : {book?.sellerMail} </p>
              </div>
              <div className='md:my-10 my-4'>
-                <p className='font-bold text-xl'>Abstract</p>
+                <p className='font-bold text-xl'>Abstract : {book?.abstract}</p>
              </div>
               <div className='flex justify-end'>
                 <Link to={'/books'} className='bg-blue-700 px-7 py-2 text-white ms-5 rounded'><FaBackward className='me-2 '/>Back</Link>
-                <button className='bg-green-700 p-2 rounded text-white ms-5'>Buy $ 300</button>
+                <button className='bg-green-700 p-2 rounded text-white ms-5'>Buy $ {book?.discountPrice}</button>
               </div>
             </div>
         </div>
@@ -64,20 +92,24 @@ function View() {
                       <p className='text-blue-500 flex gap-3 items-center'><FaCamera/>Camera clicks of the book in the hand of seller</p>
                      {/* book images in row */}
                       <div className='md:flex flex-wrap my-5'>
-                        <img className='md:w-75 w-25 md:me-2 mb-3 md:mb-0' src="https://tse3.mm.bing.net/th/id/OIP.O_5w60OzA93YxcPlYTOiaAHaLH?w=933&h=1400&rs=1&pid=ImgDetMain&o=7&rm=3" alt="book" />
-                        <img className='md:w-75 w-25 md:me-2 mb-3 md:mb-0' src="https://tse3.mm.bing.net/th/id/OIP.O_5w60OzA93YxcPlYTOiaAHaLH?w=933&h=1400&rs=1&pid=ImgDetMain&o=7&rm=3" alt="book" />
-                        <img className='md:w-75 w-25 md:me-2 mb-3 md:mb-0' src="https://tse3.mm.bing.net/th/id/OIP.O_5w60OzA93YxcPlYTOiaAHaLH?w=933&h=1400&rs=1&pid=ImgDetMain&o=7&rm=3" alt="book" />
+                        {
+                          book?.uploadImages?.map(fileName=>(
+                               <img className='md:w-75 w-25 md:me-2 mb-3 md:mb-0' src={`${serverURL}/uploads/${fileName}`} alt="book" />
+                          ))
+                        }
+                      
                       </div>
-                    </div>
+                   </div>
                   </div>
 
-                </div>
           </div>
-      </div>}
+          </div>
+      </div>
+      }
 
     <Footer/>
     </>
   )
-}
 
+}
 export default View
