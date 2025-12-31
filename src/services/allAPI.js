@@ -53,3 +53,25 @@ export const ediUserAPI = async(id,reqBody,reqHeader) =>{
   return await commonAPI("PUT",`${serverURL}/user/${id}/edit`,reqBody,reqHeader)
 }
 
+// get all books  - called by admin collection component 
+export const getAllAdminBookAPI = async(reqHeader) =>{
+  return await commonAPI("GET",`${serverURL}/admin-books/all`,{},reqHeader)
+}
+
+// get all users  - called by admin collection component 
+export const getAllUsersAPI = async(reqHeader) =>{
+  return await commonAPI("GET",`${serverURL}/admin-users/all`,{},reqHeader)
+}
+
+// put request to update book status  - called by admin collection component 
+export const updateBookStatusAPI = async(id,reqHeader) =>{
+  return await commonAPI("PUT",`${serverURL}/books/${id}/update`,{},reqHeader)
+}
+
+
+// delete request from  book status component  - called by admin collection component 
+export const deleteBookAPI = async(id,reqHeader) =>{
+  return await commonAPI("DELETE",`${serverURL}/books/${id}/delete`,{},reqHeader)
+}
+
+

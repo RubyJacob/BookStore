@@ -1,9 +1,50 @@
 import React, { useState } from 'react'
 import { FaEdit } from 'react-icons/fa'
 import { FaX ,FaPen} from 'react-icons/fa6'
+import { ToastContainer, toast } from 'react-toastify';
+import { ediUserAPI } from '../../services/allAPI';
+import { useNavigate } from 'react-router-dom';
 
 function Edit() {
   const [offcanvasStatus,setOffcanvas] = useState(false)
+  const navigate = useNavigate()
+
+   const handleProfileUpdate = async ()=>{
+    if(!username || !password || !bio || !comfirmPassword){
+      toast.info("Please fill the form completely !!!")
+    }
+    else{
+      const token = sessionStorage.getItem("token")
+      if(token){
+        const reqHeader ={
+          "Authorization" : `Bearer ${token}`
+        }
+       const reqBody = new FormData()
+       for(let key in userDetails){
+          if(key != "picture"){
+            reqBody.append(key,userDetails[key])
+          }
+          else{
+            preview ? reqBody.append("picture",userDetails.picture): reqBody.append("picture",existingPicture)
+          }
+       }
+
+       const result = await ediUserAPI(id,reqBody,reqHeader)
+       if(result.status == 200){
+        toast.success("Profile Updated successfully... Please login with new password")
+        setTimeout(()=>{
+          navigate('/login')
+        },2000)
+       }
+       else{
+        console.log(result);
+        toast.error("Something went wrong !!!")
+       }
+    }
+   }
+  }
+
+
   return (
     <div>
         {/* Edit button */}
@@ -52,5 +93,4 @@ function Edit() {
     </div>
   )
 }
-
 export default Edit

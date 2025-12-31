@@ -1,7 +1,13 @@
 import React from 'react'
 import { FaPowerOff } from 'react-icons/fa'
+import {useNavigate } from 'react-router-dom'
 
 function AdminHeader() {
+  const navigate = useNavigate()
+  const logout = ()=>{
+    sessionStorage.clear()
+    navigate('/login')
+  }
   return (
     <>
     {/* header part */}
@@ -12,7 +18,7 @@ function AdminHeader() {
               <p className='font-bold text-2xl'>BOOKSTORE</p>
         </div>
         {/* logout */}
-        <button className='flex items-center bg-black text-white p-2 border rounded'><FaPowerOff className='me-2'/> Logout</button>
+        <button onClick={logout} className='flex items-center bg-black text-white p-2 border rounded'><FaPowerOff  className='me-2'/> Logout</button>
       </div>
       {/* header lower part */}
       <div className='bg-black p-2'>
